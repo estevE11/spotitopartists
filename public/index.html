@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plyalist Top Artists</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <input id="playlist_id" placeholder="Playlist ID"><button onclick="clickeado()">Send</button><br>
+    <div>
+        <ul class="art_list"></ul>
+    </div>
+
+    <script>
+        const clickeado = () => {
+            const pid = document.getElementById("playlist_id").value;
+            $.get("http://localhost:8080/playlisttop/" + pid, (res) => {
+                let top = 1;
+                let curr_val = res[0].count;
+                for(let i = 0; i < res.length; i++) {
+                    if(res[i].count != curr_val) {
+                        top++;
+                        curr_val = res[i].count;
+                    }
+                    const li = $("<li class='li_art' id='art_" + i + "'>" + top + ". " + res[i].name + " (" + res[i].count + ")" + "</li>");
+                    $(".art_list").append(li);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

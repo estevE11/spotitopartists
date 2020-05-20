@@ -1,9 +1,21 @@
+const path = require("path");
+
+const express = require("express");
+const app = express();
+
 const top_artists = require("./top_artists");
 
+const PORT = 8080;
 
-const main = async () => {
-    const art = await top_artists("37i9dQZEVXbMDoHDwVN2tF");
-    console.log(art);
-}
+app.listen(PORT, () => {
+    console.log("Listening to " + PORT);
+});
 
-main();
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname + "/public/index.html"));
+});
+
+app.get("/playlisttop/:playlist_id", async (req, res) => {
+    const top = await top_artists(req.params.playlist_id);
+    res.send(top);
+});
