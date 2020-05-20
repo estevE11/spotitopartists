@@ -5,7 +5,7 @@ const app = express();
 
 const top_artists = require("./top_artists");
 
-const PORT = 8080;
+const PORT = 80;
 
 app.listen(PORT, () => {
     console.log("Listening to " + PORT);
