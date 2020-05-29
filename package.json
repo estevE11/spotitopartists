@@ -24,7 +24,6 @@
   "homepage": "https://github.com/estevE11/spotitopartists#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "node-spotify-api": "^1.1.1",
-    "nodemon": "^2.0.4"
+    "node-spotify-api": "^1.1.1"
   }
 }
