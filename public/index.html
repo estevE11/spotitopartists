@@ -47,7 +47,7 @@
         }
 
         const load_playlist = (id) => {
-            $.get("http://localhost:8080/playlisttop/" + id, (res) => {
+            $.get("https://topplaylistartists.azurewebsites.net//playlisttop/" + id, (res) => {
                 current_id = id;
                 $("#btn_share").attr("class", "btn btn-success btn-sm");
                 $("#pl_name").html(res.name);
