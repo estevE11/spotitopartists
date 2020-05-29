@@ -3,31 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plyalist Top Artists</title>
+    <title>Playlist Top Artists</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </head>
 <body>
-    <input id="playlist_id" placeholder="Playlist ID"><button onclick="clickeado()">Send</button><br>
+    <input id="playlist_id" placeholder="Playlist URL">
+    <button class='btn btn-primary btn-sm ' onclick="clickeado()">Send</button>
+    <button id="btn_share" class='btn btn-success btn-sm disabled' onclick="share()">Share</button>
+    <br>
     <div>
-        <ul class="art_list"></ul>
+        <b>Playlist name: </b><span id="pl_name"> - </span><br>
+        <b>Owner: </b><span id="pl_owner"> - </span>
+    </div>
+    <div>
+        <ul class="art_list" style="list-style: none;"></ul>
     </div>
 
+
     <script>
+        let current_id = null;
+
+        window.onload = () => {
+            console.log(window.location.href);
+            const url_s = window.location.href.split("/");
+            if(url_s[3] != "") {
+                load_playlist(url_s[3]);
+            }
+        }
+
         const clickeado = () => {
-            const pid = document.getElementById("playlist_id").value;
-            $.get("http://localhost:8080/playlisttop/" + pid, (res) => {
+            $(".art_list").html("");
+            const pid = /(\/playlist\/)([A-Z]|[0-9]|[a-z])+/g.exec(document.getElementById("playlist_id").value);
+            const id = pid[0].split("/")[2];
+            load_playlist(id);
+        }
+
+        const share = () => {
+            console.log("caca");
+            copyToClipboard("localhost:8080/" + current_id);
+        }
+
+        const load_playlist = (id) => {
+            $.get("http://localhost:8080/playlisttop/" + id, (res) => {
+                current_id = id;
+                $("#btn_share").attr("class", "btn btn-success btn-sm");
+                $("#pl_name").html(res.name);
+                $("#pl_owner").html(res.owner_name);
+                const list = res.sorted_list;
                 let top = 1;
-                let curr_val = res[0].count;
-                for(let i = 0; i < res.length; i++) {
-                    if(res[i].count != curr_val) {
+                let curr_val = list[0].count;
+                for(let i = 0; i < list.length; i++) {
+                    if(list[i].count != curr_val) {
                         top++;
-                        curr_val = res[i].count;
+                        curr_val = list[i].count;
                     }
-                    const li = $("<li class='li_art' id='art_" + i + "'>" + top + ". " + res[i].name + " (" + res[i].count + ")" + "</li>");
+                    const li = $("<li class='li_art' id='art_" + i + "'><b>" + top + ".</b> " + list[i].name + " (" + list[i].count + ")" + "</li>");
                     $(".art_list").append(li);
                 }
             });
         }
+
+        // Script copiat de https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
+        function copyToClipboard(str) {
+            const el = document.createElement('textarea');
+            el.value = str;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+        };
     </script>
 </body>
 </html>

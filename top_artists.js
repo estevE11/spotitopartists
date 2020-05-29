@@ -52,5 +52,10 @@ const get_sorted_artist_count = (data) => {
         if(!inserted) res.push(it);
     }
 
-    return res;
+    return {
+        sorted_list: res,
+        name: data.name,
+        imgs: data.images,
+        owner_name: data.owner.display_name
+    };
 }

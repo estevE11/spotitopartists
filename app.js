@@ -15,6 +15,10 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname + "/public/index.html"));
 });
 
+app.get("/:playlist_id", (req, res) => {
+    res.sendFile(path.join(__dirname + "/public/index.html"));
+});
+
 app.get("/playlisttop/:playlist_id", async (req, res) => {
     const top = await top_artists(req.params.playlist_id);
     res.send(top);
